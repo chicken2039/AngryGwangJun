@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+    느존수를 막기에는 너무 느존수
+    </title>
+    <style>
+        canvas{
+            border: 1px dotted red;
+            background-color: #fcff00;   
+        }
+    </style>
+    <script>
+        var context;
+        var velocity;
+        var angle;
+        var ballV;
+        var ballVx;
+        var ballVy;
+        var ballX=10;
+        var ballY=250;
+        var ballRadius=10;
+        var score=0;
+        
+        var image = new Image();
+        var backimage = new Image();
+        image.src="image.png";
+        backimage.src="backimage.png";
+        var timer;
+        
+        function drawball()//공 그리기
+        {
+            context.beginPath();
+            context.arc(ballX,ballY,ballRadius,0,2.0*Math.PI,true);
+            context.fillStyle="red";
+            context.fill();
+        }
+        
+        function drawBackground()//배경 그리기
+        {
+            context.drawImage(image,200,100);
+            context.drawImage(backimage,0,280);
+        }
+        
+        function draw()//전체화면
+        {
+            context.clearRect(0,0,500,300);
+            drawball();
+            drawBackground();
+        }
+        
+        function init()
+        {
+            ballX=20;
+            ballY=250;
+            ballRadius=10;
+            context=document.getElementById('canvas').getContext('2d');
+            draw();
+        }
+        
+        function start()
+        {
+            init();
+            velocity=Number(document.getElementById("velocity").value);
+            angle = Number(document.getElementById("angle").value);
+            var angleR=angle*Math.PI/180;
+            
+            ballVx=velocity*Math.cos(angleR);
+            ballVy=-velocity*Math.sin(angleR);
+            
+            draw();
+            timer=setInterval(calculate,100);
+            return false;
+        }
+        
+        function calculate()
+        {
+            ballVy=ballVy+1.98;
+            ballX=ballX+ballVx;
+            ballY=ballY+ballVy;
+            
+            if((ballX>=200)&&(ballX<=230)&&(ballY>=100)&&(ballY<=210))
+                {
+                    score++;
+                    document.getElementById("score").innerHTML="존수="+score;
+                    clearInterval(timer);
+                }
+            if(ballY>=300||ballY<0)
+                {
+                    clearInterval(timer);
+                }
+            draw();
+        }
+    </script>
+    </head>
+<body onload="init();">
+    <canvas id="canvas" width="500" height="300"></canvas>
+    <div id="control">
+        속도<input id="velocity" value="30" type="number" min="0" max="100" step="1"/>
+        각도<input id="angle" value="45" type="number" min="0" max="90" step="1"/>
+        <div id="score">점수 = 0</div>
+        <button onclick="start()">LUNCH</button>
+    
+    </div>
+    
+    
+    </body>
+</html>
